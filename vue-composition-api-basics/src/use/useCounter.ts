@@ -1,12 +1,12 @@
 import { reactive, computed, watch, nextTick } from 'vue'
 import { OddOrEven } from '@/types/OddOrEven'
 
+const counterData = reactive({
+  count: 0,
+  counterTitle: 'myTitle'
+})
 
 export function useCounter(){
-const counterData = reactive({
-    count: 0,
-    counterTitle: 'myTitle'
-  })
 
   watch(
     () => counterData.count,

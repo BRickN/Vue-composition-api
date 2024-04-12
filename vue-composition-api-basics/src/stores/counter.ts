@@ -1,12 +1,32 @@
-import { ref, computed } from 'vue'
+import {  computed, reactive, nextTick } from 'vue'
 import { defineStore } from 'pinia'
+import { OddOrEven } from '@/types/OddOrEven'
 
 export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
+  const counterData = reactive({
+    count: 1,
+    counterTitle: 'myTitle'
+  }
+)
+  const increment = async (amount: number, event?: Event) => {
+    if (event) {
+      console.log(event)
+    }
+    counterData.count += amount
+    await nextTick()
+    console.log('counter updated')
   }
 
-  return { count, doubleCount, increment }
+  const decrement = (amount: number, event?: Event) => {
+    if (event) {
+      console.log(event)
+    }
+    counterData.count -= amount
+  }
+
+  const oddOrEven = computed<OddOrEven>(() => {
+    return counterData.count % 2 === 0 ? OddOrEven.even : OddOrEven.odd
+  })
+
+  return { counterData, oddOrEven, increment, decrement }
 })

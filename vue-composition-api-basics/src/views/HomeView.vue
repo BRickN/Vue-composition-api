@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { vAutofocus } from '@/directives/vAutofocus'
-import { useCounter } from '@/use/useCounter'
+import { useCounterStore } from '@/stores/counter'
 
-const { counterData, oddOrEven, increment, decrement } = useCounter()
+const { counterData, oddOrEven, increment, decrement } = useCounterStore()
 
 /*
   Title
