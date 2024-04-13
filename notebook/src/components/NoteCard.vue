@@ -4,8 +4,7 @@
       <div class="card-content">
         <div class="card-title"><h2>Flex</h2></div>
         <p class="card-text">
-          This is the shorthand for flex-grow, flex-shrink and flex-basis combined. The second and
-          third parameters (flex-shrink and flex-basis) are optional. Default is 0 1 auto.
+          {{ props.note.content }}
         </p>
         <div class="button-container">
           <button class="btn btn-white">Edit</button>
@@ -15,6 +14,18 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import type { PropType } from 'vue'
+import type { Note } from '@/types/Note'
+
+const props = defineProps({
+  note: {
+    type: Object as PropType<Note>,
+    required: true
+  }
+})
+</script>
 
 <style scoped>
 .cards-item {
