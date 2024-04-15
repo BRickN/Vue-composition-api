@@ -26,22 +26,15 @@
 <script setup lang="ts">
 /* IMPORTS */
 import { ref, onMounted, computed, reactive } from 'vue'
-import type { PropType } from 'vue'
 import type { Note } from '@/types/Note'
+import { useNotesStore } from '@/stores/useNotesStore'
 
-/* PROPS */
-const props = defineProps({
-  note: {
-    type: Object as PropType<Note>,
-    required: true
-  }
-})
+const { addNote } = useNotesStore()
+
 /* REFS */
 const newNote = reactive<Note>({
-  id: props.note.id,
-  title: props.note.title,
-  content: props.note.content,
-  date: props.note.date
+  title: '',
+  content: ''
 })
 const newNoteTitleRef = ref<HTMLInputElement | null>(null)
 
@@ -53,12 +46,7 @@ const noteLength = computed<number>(() => {
 /* FUNCTIONS */
 const submit = () => {
   if (isValidNoteContent()) {
-    emit('addNewNote', {
-      id: 1,
-      title: newNote.title,
-      content: newNote.content,
-      date: new Date()
-    })
+    addNote(newNote)
     clearNoteContents()
     focusNewNoteRef()
   }
@@ -76,11 +64,6 @@ const focusNewNoteRef = () => {
 const isValidNoteContent = (): boolean => {
   return newNote.title?.trim().length > 0 && newNote.content?.trim().length > 0
 }
-
-/* EMITS */
-const emit = defineEmits<{
-  addNewNote: [value: Note]
-}>()
 
 /* LIFECYCLE */
 onMounted(() => {

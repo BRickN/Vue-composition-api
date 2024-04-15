@@ -1,57 +1,58 @@
 @import './base.css';
 
 body {
-    font-family: "Dosis", sans-serif;
-    line-height: 1.6;
+  font-family: 'Dosis', sans-serif;
+  line-height: 1.6;
 }
 
 .container {
-    max-width: 1280px;
-    padding: 1rem 1.5rem;
-    margin: auto;
-    overflow: hidden;
+  max-width: 1280px;
+  padding: 1rem 1.5rem;
+  margin: auto;
+  overflow: hidden;
 }
 
 h1 {
-    color: var(--vt-c-navy)
+  color: var(--vt-c-navy);
 }
 
 h2 {
-    color: var(--vt-c-navy)
+  color: var(--vt-c-navy);
 }
 
 input,
 textarea {
-    font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 a {
-    text-decoration: none;
-    color: #333;
+  text-decoration: none;
+  color: #333;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
 
 .btn {
-    background-color: var(--vt-c-white-soft);
-    border: 1px solid var(--vt-c-blue);
-    color: var(--vt-c-navy);
-    padding: 0.5rem;
-    text-transform: lowercase;
-    width: 100px;
-    font-size: medium;
-    border-radius: 5px;
+  background-color: var(--vt-c-white-soft);
+  border: 1px solid var(--vt-c-blue);
+  color: var(--vt-c-navy);
+  padding: 0.5rem;
+  text-transform: lowercase;
+  width: 100px;
+  font-size: medium;
+  border-radius: 5px;
+  text-align: center;
 }
 
 .btn.btn-white {
-    background-color: white;
+  background-color: white;
 }
 
 .btn:hover {
-    background-color: var(--vt-c-navy);
-    border: 1px solid var(--vt-c-navy);
-    color: var(--vt-c-white-text);
-    cursor: pointer;
+  background-color: var(--vt-c-navy);
+  border: 1px solid var(--vt-c-navy);
+  color: var(--vt-c-white-text);
+  cursor: pointer;
 }

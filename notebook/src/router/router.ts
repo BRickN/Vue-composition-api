@@ -2,19 +2,25 @@ import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-rou
 import { Routes } from './routes'
 
 const NotesView = () => import('@/views/NotesView.vue')
+const EditNoteView = () => import('@/views/EditNoteView.vue')
 const StatsView = () => import('@/views/StatsView.vue')
 
 const routes: RouteRecordRaw[] = [
-    {
-      path: '/',
-      name: Routes.Notes,
-      component: NotesView
-    },
-    {
-      path: '/stats',
-      name: Routes.Stats,
-      component: StatsView
-    },
+  {
+    path: '/',
+    name: Routes.Notes,
+    component: NotesView
+  },
+  {
+    path: '/editnote/:id',
+    name: Routes.EditNote,
+    component: EditNoteView
+  },
+  {
+    path: '/stats',
+    name: Routes.Stats,
+    component: StatsView
+  }
 ]
 
 const router = createRouter({

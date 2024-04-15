@@ -1,4 +1,5 @@
 export enum Routes {
-    Notes = 'notes',
-    Stats = 'stats'
+  Notes = 'notes',
+  EditNote = 'editNote',
+  Stats = 'stats'
 }

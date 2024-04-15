@@ -10,8 +10,10 @@
           {{ props.note.content }}
         </p>
         <div class="button-container">
-          <button class="btn btn-white" @click.prevent="$emit('editNote', note)">Edit</button>
-          <button class="btn btn-white" @click.prevent="deleteNote">Delete</button>
+          <RouterLink :to="{ name: Routes.EditNote, params: { id: note.id } }" class="btn btn-white"
+            >Edit</RouterLink
+          >
+          <button class="btn btn-white" @click.prevent="handleDelete">Delete</button>
         </div>
       </div>
     </div>
@@ -21,6 +23,9 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import type { Note } from '@/types/Note'
+import { Routes } from '@/router/routes'
+import { useNotesStore } from '@/stores/useNotesStore'
+const { deleteNote } = useNotesStore()
 
 /* PROPS */
 const props = defineProps({
@@ -30,15 +35,9 @@ const props = defineProps({
   }
 })
 
-/* EMITS */
-const emit = defineEmits<{
-  editNote: [value: Note]
-  deleteNote: [value: Note]
-}>()
-
-const deleteNote = () => {
+const handleDelete = () => {
   if (confirm(`Are you sure you want to delete note '${props.note.title}'?`)) {
-    emit('deleteNote', props.note)
+    deleteNote(props.note)
   }
 }
 </script>
