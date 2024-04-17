@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import NavBar from './components/NavBar.vue'
-</script>
-
 <template>
   <header class="">
     <NavBar />
@@ -11,4 +7,6 @@ import NavBar from './components/NavBar.vue'
   </main>
 </template>
 
-<style></style>
+<script setup lang="ts">
+import NavBar from './components/NavBar.vue'
+</script>

@@ -5,15 +5,23 @@
     <NoteCard v-for="note in notes" :key="note.id" :note="note" />
   </div>
 </template>
+
 <script setup lang="ts">
-import { reactive } from 'vue'
 import NoteCard from '@/components/NoteCard.vue'
 import NoteForm from '@/components/NoteForm.vue'
+import { storeToRefs } from 'pinia'
 import { useNotesStore } from '@/stores/useNotesStore'
 import type { Note } from '@/types/Note'
+import { onMounted } from 'vue'
 
-const { notes, addNote } = useNotesStore()
-const submitNote = (note: Note) => {
-  addNote(note)
+const notesStore = useNotesStore()
+const { notes } = storeToRefs(notesStore)
+
+const submitNote = async (note: Note) => {
+  await notesStore.create(note)
 }
+
+onMounted(() => {
+  notesStore.init()
+})
 </script>

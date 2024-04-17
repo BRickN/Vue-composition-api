@@ -17,7 +17,7 @@ import type { PropType } from 'vue'
 import { useNotesStore } from '@/stores/useNotesStore'
 import { onClickOutside } from '@vueuse/core'
 import type { Note } from '@/types/Note'
-const { deleteNote } = useNotesStore()
+const { remove } = useNotesStore()
 
 const modal = ref<HTMLElement | null>(null)
 
@@ -46,7 +46,7 @@ const closeModal = () => {
 }
 
 const handleDelete = () => {
-  deleteNote(props.note)
+  remove(props.note)
 }
 
 const handleKeyboard = (event: KeyboardEvent) => {

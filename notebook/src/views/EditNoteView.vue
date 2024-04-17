@@ -15,14 +15,14 @@ const note = reactive<Note>({
   content: ''
 })
 
-const { getNote, editNote } = useNotesStore()
+const { findById, update } = useNotesStore()
 
 const route = useRoute()
 const router = useRouter()
 
 const editExistingNote = (note: Note) => {
   try {
-    editNote(note)
+    update(note)
     updateReactiveNote()
     alert('Note has been updated')
     router.push({ name: Routes.Notes })
@@ -36,7 +36,7 @@ onBeforeMount(() => {
 })
 
 const updateReactiveNote = () => {
-  const storeNote = getNote(parseInt(route.params.id as string))
+  const storeNote = findById(parseInt(route.params.id as string))
   if (storeNote) {
     note.id = storeNote.id
     note.title = storeNote.title
@@ -44,16 +44,4 @@ const updateReactiveNote = () => {
     note.date = storeNote.date
   }
 }
-// watch(
-//   () => route.params.id,
-//   (newId) => {
-//     Object.assign(note, getNote(parseInt(newId as string)))
-//     console.log(note)
-//     // note = getNote(parseInt(newId as string))
-//   }
-// )
-
-// onMounted(() => {
-//   getNote(parseInt(route.params.id))
-// })
 </script>

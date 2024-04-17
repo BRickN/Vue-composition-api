@@ -1,38 +1,27 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import {
+  CollectionReference,
+  Query,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  setDoc,
+  updateDoc, } from 'firebase/firestore';
+import type { DocumentData,  Unsubscribe } from 'firebase/firestore';
+import { db } from '@/includes/firebase'
 import type { Note } from '@/types/Note'
+import type { Timestamp } from 'firebase/firestore/lite';
+
+const notesCollection: CollectionReference<DocumentData, DocumentData> = collection(db, 'notes');
+let queryNotesCollection: Query;
+let notesSnapshotUnsubscribe: Unsubscribe | null = null;
 
 export const useNotesStore = defineStore('notesStore', () => {
-  const notes = ref<Note[]>([
-    {
-      id: 1,
-      title: 'Flex1',
-      content:
-        'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet',
-      date: new Date()
-    },
-    {
-      id: 2,
-      title: 'Flex2',
-      content:
-        'rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet',
-      date: new Date()
-    },
-    {
-      id: 3,
-      title: 'Flex3',
-      content:
-        'S3d ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet',
-      date: new Date()
-    },
-    {
-      id: 4,
-      title: 'Flex4',
-      content:
-        'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet',
-      date: new Date()
-    }
-  ])
+  const notes = ref<Note[]>([])
 
   /* COMPUTED */
   const totalNotesCount = computed<number>(() => {
@@ -43,21 +32,49 @@ export const useNotesStore = defineStore('notesStore', () => {
       return total + note.content.length
     }, 0)
   })
-  const addNote = (note: Note) => {
-    notes.value.push({
-      id: totalNotesCount.value + 1,
-      title: note.title,
-      content: note.content,
-      date: note.date
+
+  /* FUNCTIONS */
+  const init = () => {
+    // notesCollection = collection(db, 'notes');
+    queryNotesCollection = query(notesCollection, orderBy('date'))
+    fetch();
+  }
+
+  const fetch = () => {
+    if(notesSnapshotUnsubscribe){
+      notesSnapshotUnsubscribe()
+    }
+    notesSnapshotUnsubscribe = onSnapshot(queryNotesCollection, (querySnapshot) => {
+      notes.value = [];
+      querySnapshot.forEach(doc => {
+        const { title, content, date } = doc.data() as { title: string, content: string, date: Timestamp };;
+        const note: Note = {
+          id: parseInt(doc.id),
+          title: title,
+          content: content,
+          date: date.toDate()
+        }
+        notes.value.push(note)
+      })
     })
   }
 
-  const deleteNote = (note: Note) => {
+  const create = async (note: Note) => {
+    const { title, content, date } = note;
+    const id = (totalNotesCount.value + 1).toString()
+    await setDoc(doc(notesCollection, id), {
+      title,
+      content,
+      date
+    });
+  }
+
+  const remove = (note: Note) => {
     const idx = notes.value.indexOf(note)
     notes.value.splice(idx, 1)
   }
 
-  const editNote = (note: Note) => {
+  const update = (note: Note) => {
     const noteToEdit = notes.value.filter((x) => {
       return x.id === note.id
     })[0]
@@ -65,11 +82,20 @@ export const useNotesStore = defineStore('notesStore', () => {
     notes.value[idx] = note;
   }
 
-  const getNote = (id: number) : Note | undefined => {
+  const findById = (id: number) : Note | undefined => {
     return notes.value.filter((x) => {
       return x.id === id
     })[0]
   }
 
-  return { notes, totalNotesCount, totalCharacters, addNote, deleteNote, getNote, editNote }
+  return {
+    notes,
+    totalNotesCount,
+    totalCharacters,
+    create,
+    remove,
+    findById,
+    update,
+    init
+  }
 })

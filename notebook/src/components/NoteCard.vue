@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-content">
         <div class="card-title">
-          <h2>{{ note.title }}</h2>
+          <h2>{{ note.id }}: {{ note.title }}</h2>
           <h3>{{ note.date }}</h3>
         </div>
         <p class="card-text">
