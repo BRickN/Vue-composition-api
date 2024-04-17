@@ -32,6 +32,9 @@ export const useNotesStore = defineStore('notesStore', () => {
       return total + note.content.length
     }, 0)
   })
+  const newNoteId = computed<number>(() => {
+    return totalNotesCount.value + 1
+  })
 
   /* FUNCTIONS */
   const init = () => {
@@ -61,7 +64,7 @@ export const useNotesStore = defineStore('notesStore', () => {
 
   const create = async (note: Note) => {
     const { title, content, date } = note;
-    const id = (totalNotesCount.value + 1).toString()
+    const id = newNoteId.value.toString()
     await setDoc(doc(notesCollection, id), {
       title,
       content,
@@ -69,9 +72,8 @@ export const useNotesStore = defineStore('notesStore', () => {
     });
   }
 
-  const remove = (note: Note) => {
-    const idx = notes.value.indexOf(note)
-    notes.value.splice(idx, 1)
+  const remove = async (note: Note) => {
+    await deleteDoc(doc(notesCollection, note.id?.toString()));
   }
 
   const update = (note: Note) => {
