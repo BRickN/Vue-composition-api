@@ -35,13 +35,17 @@ export const useNotesStore = defineStore('notesStore', () => {
   ])
 
   /* COMPUTED */
-  const notesLength = computed<number>(() => {
+  const totalNotesCount = computed<number>(() => {
     return notes.value.length
   })
-
+  const totalCharacters = computed<number>(() => {
+    return notes.value.reduce((total, note) => {
+      return total + note.content.length
+    }, 0)
+  })
   const addNote = (note: Note) => {
     notes.value.push({
-      id: notesLength.value + 1,
+      id: totalNotesCount.value + 1,
       title: note.title,
       content: note.content,
       date: note.date
@@ -53,5 +57,19 @@ export const useNotesStore = defineStore('notesStore', () => {
     notes.value.splice(idx, 1)
   }
 
-  return { notes, addNote, deleteNote }
+  const editNote = (note: Note) => {
+    const noteToEdit = notes.value.filter((x) => {
+      return x.id === note.id
+    })[0]
+    const idx = notes.value.indexOf(noteToEdit);
+    notes.value[idx] = note;
+  }
+
+  const getNote = (id: number) : Note | undefined => {
+    return notes.value.filter((x) => {
+      return x.id === id
+    })[0]
+  }
+
+  return { notes, totalNotesCount, totalCharacters, addNote, deleteNote, getNote, editNote }
 })

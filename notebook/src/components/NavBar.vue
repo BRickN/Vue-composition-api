@@ -2,7 +2,9 @@
   <nav class="main-nav">
     <div class="max-width-container">
       <div class="navbar-brand">
-        <img src="@/assets/logo.jpg" alt="My Portfolio Logo" class="logo" />
+        <RouterLink :to="{ name: Routes.Notes }">
+          <img src="@/assets/logo.jpg" alt="My Portfolio Logo" class="logo" />
+        </RouterLink>
         <div class="hamburger-container">
           <input type="checkbox" class="toggler" v-model="hamburgerActive" />
           <div class="hamburger">
@@ -12,8 +14,16 @@
       </div>
       <div>
         <ul class="nav-items" :class="{ 'is-active': hamburgerActive }">
-          <li><RouterLink :to="{ name: Routes.Notes }">Notes</RouterLink></li>
-          <li><RouterLink :to="{ name: Routes.Stats }">Stats</RouterLink></li>
+          <li>
+            <RouterLink :to="{ name: Routes.Notes }" @click.prevent="hamburgerActive = false"
+              >Notes</RouterLink
+            >
+          </li>
+          <li>
+            <RouterLink :to="{ name: Routes.Stats }" @click.prevent="hamburgerActive = false"
+              >Stats</RouterLink
+            >
+          </li>
         </ul>
       </div>
     </div>
@@ -53,23 +63,26 @@ const hamburgerActive = ref<boolean>(false)
   justify-content: space-between;
   align-items: center;
 }
+.navbar-brand a {
+  line-height: 0;
+}
 .nav-items {
   display: flex;
 }
-.main-nav li {
+.nav-items li {
   padding: 1rem 1.5rem;
 }
-.main-nav a {
+.nav-items a {
   text-transform: uppercase;
   color: var(--vt-c-white-soft);
   border-bottom: 3px transparent solid;
   padding-bottom: 0.5rem;
   transition: border-color 0.2s ease-in-out;
 }
-.main-nav a:hover:not(.router-link-active) {
+.nav-items a:hover:not(.router-link-active) {
   border-color: var(--vt-c-blue);
 }
-.main-nav .router-link-active {
+.nav-items .router-link-active {
   border-color: var(--vt-c-mint);
 }
 

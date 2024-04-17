@@ -3,20 +3,25 @@
     <input
       class="note-title"
       placeholder="Title..."
-      v-model="newNote.title"
+      v-model="activeNote.title"
       ref="newNoteTitleRef"
+      v-focus
     />
     <textarea
       rows="8"
       class="note-area"
       placeholder="Write your note..."
-      v-model="newNote.content"
+      v-model="activeNote.content"
     ></textarea>
     <div class="btn-container">
-      <button class="btn" @click.prevent="submit" :disabled="!newNote.title || !newNote.content">
+      <button
+        class="btn"
+        @click.prevent="submit"
+        :disabled="!activeNote.title || !activeNote.content"
+      >
         Submit
       </button>
-      <button class="btn" @click.prevent="clearNoteContents">Cancel</button>
+      <button class="btn" @click.prevent="clearNoteContents" v-if="allowCancel">Cancel</button>
     </div>
     <div class="note-length">
       <p>{{ noteLength }}</p>
@@ -25,36 +30,54 @@
 </template>
 <script setup lang="ts">
 /* IMPORTS */
-import { ref, onMounted, computed, reactive } from 'vue'
+import { ref, onMounted, computed, reactive, defineProps } from 'vue'
+import type { PropType } from 'vue'
 import type { Note } from '@/types/Note'
-import { useNotesStore } from '@/stores/useNotesStore'
 
-const { addNote } = useNotesStore()
+/*
+  PROPS
+*/
+const props = defineProps({
+  modelValue: {
+    type: Object as PropType<Note>,
+    required: false
+  },
+  allowCancel: {
+    type: Boolean,
+    default: true,
+    required: false
+  }
+})
 
 /* REFS */
-const newNote = reactive<Note>({
-  title: '',
-  content: ''
+const activeNote = reactive<Note>({
+  id: props.modelValue?.id,
+  title: props.modelValue?.title ?? '',
+  content: props.modelValue?.content ?? '',
+  date: props.modelValue?.date
 })
 const newNoteTitleRef = ref<HTMLInputElement | null>(null)
 
+/* EMITS */
+const emits = defineEmits<{
+  submitNote: [note: Note]
+}>()
+
 /* COMPUTED */
 const noteLength = computed<number>(() => {
-  return !newNote.content ? 0 : newNote.content.length
+  return !activeNote.content ? 0 : activeNote.content.length
 })
 
 /* FUNCTIONS */
 const submit = () => {
   if (isValidNoteContent()) {
-    addNote(newNote)
-    clearNoteContents()
-    focusNewNoteRef()
+    emits('submitNote', activeNote)
   }
 }
 
 const clearNoteContents = () => {
-  newNote.title = ''
-  newNote.content = ''
+  activeNote.title = ''
+  activeNote.content = ''
 }
 
 const focusNewNoteRef = () => {
@@ -62,13 +85,13 @@ const focusNewNoteRef = () => {
 }
 
 const isValidNoteContent = (): boolean => {
-  return newNote.title?.trim().length > 0 && newNote.content?.trim().length > 0
+  return activeNote.title?.trim().length > 0 && activeNote.content?.trim().length > 0
 }
 
 /* LIFECYCLE */
-onMounted(() => {
-  focusNewNoteRef()
-})
+// onMounted(() => {
+//   focusNewNoteRef()
+// })
 </script>
 
 <style scoped>
@@ -87,7 +110,7 @@ onMounted(() => {
   color: var(--vt-c-navy);
 }
 .note-area {
-  margin: 1rem 0;
+  margin: 1rem 0 0 0;
   border-radius: 3px;
 }
 .btn-container {
