@@ -13,19 +13,25 @@
           <RouterLink :to="{ name: Routes.EditNote, params: { id: note.id } }" class="btn btn-white"
             >Edit</RouterLink
           >
-          <button class="btn btn-white" @click.prevent="handleDelete">Delete</button>
+          <button class="btn btn-white" @click.prevent="modalsVisibility.deleteNote = true">
+            Delete
+          </button>
         </div>
       </div>
     </div>
+    <DeleteNoteModal
+      v-if="modalsVisibility.deleteNote"
+      v-model="modalsVisibility.deleteNote"
+      :note="note"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue'
+import { reactive, type PropType } from 'vue'
 import type { Note } from '@/types/Note'
 import { Routes } from '@/router/routes'
-import { useNotesStore } from '@/stores/useNotesStore'
-const { deleteNote } = useNotesStore()
+import DeleteNoteModal from './DeleteNoteModal.vue'
 
 /* PROPS */
 const props = defineProps({
@@ -35,11 +41,9 @@ const props = defineProps({
   }
 })
 
-const handleDelete = () => {
-  if (confirm(`Are you sure you want to delete note '${props.note.title}'?`)) {
-    deleteNote(props.note)
-  }
-}
+const modalsVisibility = reactive({
+  deleteNote: false
+})
 </script>
 
 <style scoped>
