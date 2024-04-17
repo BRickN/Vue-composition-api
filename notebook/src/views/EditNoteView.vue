@@ -3,7 +3,7 @@
   <NoteForm v-model="note" @submitNote="editExistingNote" :allowCancel="false" />
 </template>
 <script setup lang="ts">
-import { reactive, watch, onBeforeMount } from 'vue'
+import { reactive, onBeforeMount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useNotesStore } from '@/stores/useNotesStore'
 import NoteForm from '@/components/NoteForm.vue'

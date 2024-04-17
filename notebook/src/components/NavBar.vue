@@ -1,5 +1,5 @@
 <template>
-  <nav class="main-nav">
+  <nav class="main-nav" ref="navbarMenuRef">
     <div class="max-width-container">
       <div class="navbar-brand">
         <RouterLink :to="{ name: Routes.Notes }">
@@ -33,7 +33,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Routes } from '@/router/routes'
+import { onClickOutside } from '@vueuse/core'
+
+const navbarMenuRef = ref<HTMLElement | null>(null)
 const hamburgerActive = ref<boolean>(false)
+
+onClickOutside(navbarMenuRef, () => {
+  hamburgerActive.value = false
+})
 </script>
 
 <style scoped>

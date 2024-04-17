@@ -19,12 +19,17 @@
         </tr>
       </tbody>
     </table>
+    <input type="text" placeholder="Do you love notebook?" v-autofocus v-model="inputText" />
   </div>
 </template>
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useNotesStore } from '@/stores/useNotesStore'
+import { useWatchCharacters } from '@/use/useWatchCharacters'
 
+const inputText = ref<string>()
 const { totalNotesCount, totalCharacters } = useNotesStore()
+useWatchCharacters(inputText)
 </script>
 
 <style scoped>

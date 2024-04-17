@@ -5,7 +5,7 @@
       placeholder="Title..."
       v-model="activeNote.title"
       ref="newNoteTitleRef"
-      v-focus
+      v-autofocus
     />
     <textarea
       rows="8"
@@ -30,10 +30,10 @@
 </template>
 <script setup lang="ts">
 /* IMPORTS */
-import { ref, onMounted, computed, reactive, defineProps } from 'vue'
+import { ref, computed, reactive, defineProps } from 'vue'
 import type { PropType } from 'vue'
 import type { Note } from '@/types/Note'
-
+import { useWatchCharacters } from '@/use/useWatchCharacters'
 /*
   PROPS
 */
@@ -80,18 +80,12 @@ const clearNoteContents = () => {
   activeNote.content = ''
 }
 
-const focusNewNoteRef = () => {
-  newNoteTitleRef.value?.focus()
-}
-
 const isValidNoteContent = (): boolean => {
   return activeNote.title?.trim().length > 0 && activeNote.content?.trim().length > 0
 }
 
-/* LIFECYCLE */
-// onMounted(() => {
-//   focusNewNoteRef()
-// })
+/* WATCH */
+useWatchCharacters(activeNote, 500)
 </script>
 
 <style scoped>
