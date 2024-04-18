@@ -9,7 +9,7 @@ import {
   onSnapshot,
   orderBy,
   query,
-  setDoc,
+  addDoc,
   updateDoc, } from 'firebase/firestore';
 import type { DocumentData,  Unsubscribe } from 'firebase/firestore';
 import { db } from '@/includes/firebase'
@@ -32,14 +32,10 @@ export const useNotesStore = defineStore('notesStore', () => {
       return total + note.content.length
     }, 0)
   })
-  const newNoteId = computed<number>(() => {
-    return totalNotesCount.value + 1
-  })
 
   /* FUNCTIONS */
   const init = () => {
-    // notesCollection = collection(db, 'notes');
-    queryNotesCollection = query(notesCollection, orderBy('date'))
+    queryNotesCollection = query(notesCollection, orderBy('date', 'desc'))
     fetch();
   }
 
@@ -64,8 +60,7 @@ export const useNotesStore = defineStore('notesStore', () => {
 
   const create = async (note: Note) => {
     const { title, content, date } = note;
-    const id = newNoteId.value.toString()
-    await setDoc(doc(notesCollection, id), {
+    await addDoc(notesCollection, {
       title,
       content,
       date
