@@ -72,7 +72,7 @@ export const useNotesStore = defineStore('notesStore', () => {
   }
 
   const update = async (note: Note) => {
-    await updateDoc(doc(notesCollection, note.id?.toString()), {
+    await updateDoc(doc(notesCollection, note.id), {
       title: note.title,
       content: note.content,
       date: note.date
