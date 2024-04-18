@@ -34,7 +34,6 @@ import { ref, computed, reactive, defineProps } from 'vue'
 import type { PropType } from 'vue'
 import type { Note } from '@/types/Note'
 import { useWatchCharacters } from '@/use/useWatchCharacters'
-import { Timestamp } from 'firebase/firestore/lite'
 /*
   PROPS
 */

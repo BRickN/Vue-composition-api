@@ -52,7 +52,7 @@ export const useNotesStore = defineStore('notesStore', () => {
       querySnapshot.forEach(doc => {
         const { title, content, date } = doc.data() as { title: string, content: string, date: Timestamp };;
         const note: Note = {
-          id: parseInt(doc.id),
+          id: doc.id,
           title: title,
           content: content,
           date: date.toDate()
@@ -76,15 +76,15 @@ export const useNotesStore = defineStore('notesStore', () => {
     await deleteDoc(doc(notesCollection, note.id?.toString()));
   }
 
-  const update = (note: Note) => {
-    const noteToEdit = notes.value.filter((x) => {
-      return x.id === note.id
-    })[0]
-    const idx = notes.value.indexOf(noteToEdit);
-    notes.value[idx] = note;
+  const update = async (note: Note) => {
+    await updateDoc(doc(notesCollection, note.id?.toString()), {
+      title: note.title,
+      content: note.content,
+      date: note.date
+    })
   }
 
-  const findById = (id: number) : Note | undefined => {
+  const findById = (id: string) : Note | undefined => {
     return notes.value.filter((x) => {
       return x.id === id
     })[0]

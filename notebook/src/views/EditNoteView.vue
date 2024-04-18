@@ -36,7 +36,7 @@ onBeforeMount(() => {
 })
 
 const updateReactiveNote = () => {
-  const storeNote = findById(parseInt(route.params.id as string))
+  const storeNote = findById(route.params.id as string)
   if (storeNote) {
     note.id = storeNote.id
     note.title = storeNote.title
