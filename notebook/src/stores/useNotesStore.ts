@@ -16,9 +16,9 @@ import { db } from '@/includes/firebase'
 import type { Note } from '@/types/Note'
 import type { Timestamp } from 'firebase/firestore/lite';
 
-const notesCollection: CollectionReference<DocumentData, DocumentData> = collection(db, 'notes');
+let notesCollection: CollectionReference<DocumentData, DocumentData>;
 let queryNotesCollection: Query;
-// let notesSnapshotUnsubscribe: Unsubscribe | null = null;
+let notesSnapshotUnsubscribe: Unsubscribe | null = null;
 
 export const useNotesStore = defineStore('notesStore', () => {
   const notes = ref<Note[]>([])
@@ -35,17 +35,24 @@ export const useNotesStore = defineStore('notesStore', () => {
   })
 
   /* FUNCTIONS */
-  const init =  () => {
-    isLoading.value = true;
+  const init =  (uid?: string) => {
+    if(!uid){
+      return
+    }
+
+    notesCollection = collection(db, 'users', uid, 'notes')
     queryNotesCollection = query(notesCollection, orderBy('date', 'desc'))
     fetch();
   }
 
   const fetch =  () => {
     isLoading.value = true;
+    if(notesSnapshotUnsubscribe){
+      notesSnapshotUnsubscribe()
+    }
     setTimeout(() => {
-      onSnapshot(queryNotesCollection, (querySnapshot) => {
-        notes.value = [];
+      notesSnapshotUnsubscribe = onSnapshot(queryNotesCollection, (querySnapshot) => {
+        clearNotes();
 
           querySnapshot.forEach(doc => {
             const { title, content, date } = doc.data() as { title: string, content: string, date: Timestamp };;
@@ -60,7 +67,11 @@ export const useNotesStore = defineStore('notesStore', () => {
 
       })
       isLoading.value = false
-    }, 2000)
+    }, 1000)
+  }
+
+  const clearNotes = () => {
+    notes.value = []
   }
 
   const create = async (note: Note) => {
@@ -95,6 +106,7 @@ export const useNotesStore = defineStore('notesStore', () => {
     totalNotesCount,
     totalCharacters,
     isLoading,
+    clearNotes,
     create,
     remove,
     findById,

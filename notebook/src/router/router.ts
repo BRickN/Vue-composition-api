@@ -35,7 +35,7 @@ const router = createRouter({
   routes: routes
 })
 
-router.beforeEach(async (to) => {
+router.beforeEach((to) => {
   const authStore = useAuthStore();
   if (!authStore.user && to.name !== Routes.Auth) {
     return { name: Routes.Auth };

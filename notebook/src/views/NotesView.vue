@@ -14,8 +14,10 @@ import { storeToRefs } from 'pinia'
 import { useNotesStore } from '@/stores/useNotesStore'
 import type { Note } from '@/types/Note'
 import { onMounted } from 'vue'
+import { useAuthStore } from '@/stores/useAuthStore'
 
 const notesStore = useNotesStore()
+const authStore = useAuthStore()
 const { notes } = storeToRefs(notesStore)
 
 const submitNote = async (note: Note) => {
@@ -23,7 +25,7 @@ const submitNote = async (note: Note) => {
 }
 
 onMounted(async () => {
-  await notesStore.init()
+  await notesStore.init(authStore.user?.uid)
 })
 </script>
 
