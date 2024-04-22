@@ -65,6 +65,8 @@ export const useNotesStore = defineStore('notesStore', () => {
             notes.value.push(note)
           })
 
+      }, (error) => {
+        console.log(error.message)
       })
       isLoading.value = false
     }, 1000)
