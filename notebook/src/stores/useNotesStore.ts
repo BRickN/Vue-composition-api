@@ -18,10 +18,11 @@ import type { Timestamp } from 'firebase/firestore/lite';
 
 const notesCollection: CollectionReference<DocumentData, DocumentData> = collection(db, 'notes');
 let queryNotesCollection: Query;
-let notesSnapshotUnsubscribe: Unsubscribe | null = null;
+// let notesSnapshotUnsubscribe: Unsubscribe | null = null;
 
 export const useNotesStore = defineStore('notesStore', () => {
   const notes = ref<Note[]>([])
+  const isLoading = ref<boolean>(false)
 
   /* COMPUTED */
   const totalNotesCount = computed<number>(() => {
@@ -34,28 +35,32 @@ export const useNotesStore = defineStore('notesStore', () => {
   })
 
   /* FUNCTIONS */
-  const init = () => {
+  const init =  () => {
+    isLoading.value = true;
     queryNotesCollection = query(notesCollection, orderBy('date', 'desc'))
     fetch();
   }
 
-  const fetch = () => {
-    if(notesSnapshotUnsubscribe){
-      notesSnapshotUnsubscribe()
-    }
-    notesSnapshotUnsubscribe = onSnapshot(queryNotesCollection, (querySnapshot) => {
-      notes.value = [];
-      querySnapshot.forEach(doc => {
-        const { title, content, date } = doc.data() as { title: string, content: string, date: Timestamp };;
-        const note: Note = {
-          id: doc.id,
-          title: title,
-          content: content,
-          date: date.toDate()
-        }
-        notes.value.push(note)
+  const fetch =  () => {
+    isLoading.value = true;
+    setTimeout(() => {
+      onSnapshot(queryNotesCollection, (querySnapshot) => {
+        notes.value = [];
+
+          querySnapshot.forEach(doc => {
+            const { title, content, date } = doc.data() as { title: string, content: string, date: Timestamp };;
+            const note: Note = {
+              id: doc.id,
+              title: title,
+              content: content,
+              date: date.toDate()
+            }
+            notes.value.push(note)
+          })
+
       })
-    })
+      isLoading.value = false
+    }, 2000)
   }
 
   const create = async (note: Note) => {
@@ -89,6 +94,7 @@ export const useNotesStore = defineStore('notesStore', () => {
     notes,
     totalNotesCount,
     totalCharacters,
+    isLoading,
     create,
     remove,
     findById,

@@ -4,6 +4,7 @@ import { Routes } from './routes'
 const NotesView = () => import('@/views/NotesView.vue')
 const EditNoteView = () => import('@/views/EditNoteView.vue')
 const StatsView = () => import('@/views/StatsView.vue')
+const AuthView = () => import('@/views/AuthView.vue')
 
 const routes: RouteRecordRaw[] = [
   {
@@ -20,6 +21,11 @@ const routes: RouteRecordRaw[] = [
     path: '/stats',
     name: Routes.Stats,
     component: StatsView
+  },
+  {
+    path: '/auth',
+    name: Routes.Auth,
+    component: AuthView
   }
 ]
 

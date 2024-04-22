@@ -24,6 +24,11 @@
               >Stats</RouterLink
             >
           </li>
+          <li>
+            <RouterLink :to="{ name: Routes.Auth }" @click.prevent="hamburgerActive = false"
+              >Log out</RouterLink
+            >
+          </li>
         </ul>
       </div>
     </div>
