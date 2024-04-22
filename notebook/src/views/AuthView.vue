@@ -36,8 +36,16 @@
 
 <script setup lang="ts">
 import { computed, ref, reactive } from 'vue'
+import { useAuthStore } from '@/stores/useAuthStore'
 import type { Credentials } from '@/types/Credentials'
+
+const authStore = useAuthStore()
 const register = ref<boolean>(false)
+const credentials = reactive<Credentials>({
+  email: '',
+  password: ''
+})
+
 const formTitle = computed(() => {
   return register.value ? 'Register' : 'Login'
 })
@@ -50,18 +58,13 @@ const onSubmit = () => {
   register.value ? registerUser() : loginUser()
 }
 
-const registerUser = () => {
-  console.log('reg')
+const registerUser = async () => {
+  await authStore.registerUser(credentials)
 }
 
-const loginUser = () => {
-  console.log('log')
+const loginUser = async () => {
+  await authStore.loginUser(credentials)
 }
-
-const credentials = reactive<Credentials>({
-  email: '',
-  password: ''
-})
 </script>
 
 <style scoped>

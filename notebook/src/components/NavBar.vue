@@ -24,9 +24,11 @@
               >Stats</RouterLink
             >
           </li>
-          <li>
-            <RouterLink :to="{ name: Routes.Auth }" @click.prevent="hamburgerActive = false"
-              >Log out</RouterLink
+          <li v-if="user">
+            <RouterLink
+              :to="{ name: Routes.Auth }"
+              @click="(hamburgerActive = false), authStore.logoutUser()"
+              >Logout</RouterLink
             >
           </li>
         </ul>
@@ -37,9 +39,13 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { Routes } from '@/router/routes'
 import { onClickOutside } from '@vueuse/core'
+import { useAuthStore } from '@/stores/useAuthStore'
 
+const authStore = useAuthStore()
+const { user } = storeToRefs(authStore)
 const navbarMenuRef = ref<HTMLElement | null>(null)
 const hamburgerActive = ref<boolean>(false)
 

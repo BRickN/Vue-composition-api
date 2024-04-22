@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
+import { useAuthStore } from '@/stores/useAuthStore';
 import { Routes } from './routes'
 
 const NotesView = () => import('@/views/NotesView.vue')
@@ -33,5 +34,16 @@ const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: routes
 })
+
+router.beforeEach(async (to) => {
+  const authStore = useAuthStore();
+  if (!authStore.user && to.name !== Routes.Auth) {
+    return { name: Routes.Auth };
+  }
+
+  if (authStore.user && to.name === Routes.Auth) {
+    return false;
+  }
+});
 
 export default router
